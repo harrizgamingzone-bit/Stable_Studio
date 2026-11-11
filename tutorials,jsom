@@ -1,0 +1,30 @@
+[
+  {
+    "id": "working-door",
+    "title": "Working Door",
+    "difficulty": "Beginner",
+    "tags": ["Scripting", "Models"],
+    "description": "A door that opens when a player touches it and closes after a few seconds.",
+    "youtube": "",
+    "steps": [
+      "Insert a Part, resize it into a door shape, and name it Door.",
+      "Turn on Anchored in the Properties window.",
+      "Insert a Script into the Door and paste the script below.",
+      "Press Play and walk into the door."
+    ],
+    "scripts": [
+      {
+        "name": "DoorScript",
+        "location": "Door → Script",
+        "code": "local door = script.Parent\nlocal open = false\n\ndoor.Touched:Connect(function(hit)\n\tif hit.Parent:FindFirstChild(\"Humanoid\") and not open then\n\t\topen = true\n\t\tdoor.Transparency = 0.7\n\t\tdoor.CanCollide = false\n\t\ttask.wait(3)\n\t\tdoor.Transparency = 0\n\t\tdoor.CanCollide = true\n\t\topen = false\n\tend\nend)"
+      }
+    ],
+    "models": [
+      { "name": "Example Door Model", "id": "123456789" }
+    ],
+    "notes": [
+      "If the door falls over, make sure Anchored is on.",
+      "Replace the example model ID with your own."
+    ]
+  }
+]
