@@ -26,5 +26,65 @@
       "If the door falls over, make sure Anchored is on.",
       "Replace the example model ID with your own."
     ]
+  },
+  {
+    "id": "day-night-cycle",
+    "title": "Day and Night Cycle",
+    "difficulty": "Beginner",
+    "tags": ["Scripting", "Lighting"],
+    "description": "Make the sun and sky change smoothly from morning to night, over and over.",
+    "youtube": "",
+    "steps": [
+      "Open your game in Roblox Studio.",
+      "In the Explorer window, find ServerScriptService.",
+      "Hover over ServerScriptService, tap the + button, and choose Script.",
+      "Delete the starter code inside the script.",
+      "Paste the script below.",
+      "Change DAY_LENGTH to make the day faster or slower. 120 means a full day takes 2 minutes.",
+      "Press Play and watch the sky change."
+    ],
+    "scripts": [
+      {
+        "name": "DayNightCycle",
+        "location": "ServerScriptService → Script",
+        "code": "local Lighting = game:GetService(\"Lighting\")\n\nlocal DAY_LENGTH = 120 -- seconds for one full day\nlocal START_TIME = 6 -- starts at 6 AM\n\nLighting.ClockTime = START_TIME\n\nwhile true do\n\tlocal step = 24 / DAY_LENGTH * 0.1\n\tLighting.ClockTime = (Lighting.ClockTime + step) % 24\n\ttask.wait(0.1)\nend"
+      }
+    ],
+    "models": [],
+    "notes": [
+      "Put the script in ServerScriptService, not inside a Part, or it won't run properly.",
+      "For a nicer sunset, add a Sky object inside Lighting and turn on Atmosphere."
+    ]
+  },
+  {
+    "id": "sprint-stamina",
+    "title": "Sprint and Stamina Bar",
+    "difficulty": "Beginner",
+    "tags": ["Scripting", "UI"],
+    "description": "Hold Shift to run faster while a sleek stamina bar drains, turns red when low, and refills when you rest.",
+    "youtube": "",
+    "steps": [
+      "Open your game in Roblox Studio.",
+      "In the Explorer window, find StarterPlayer, then StarterPlayerScripts inside it.",
+      "Hover over StarterPlayerScripts, tap the + button, and choose LocalScript.",
+      "Delete the starter code inside the LocalScript.",
+      "Paste the script below. It builds the whole bar by itself, so you don't need to make any UI by hand.",
+      "Change the numbers at the top to tune the speed, drain, and refill.",
+      "Press Play, then hold Left Shift while moving to sprint."
+    ],
+    "scripts": [
+      {
+        "name": "SprintStamina",
+        "location": "StarterPlayer → StarterPlayerScripts → LocalScript",
+        "code": "local Players = game:GetService('Players')\nlocal UserInputService = game:GetService('UserInputService')\nlocal TweenService = game:GetService('TweenService')\nlocal RunService = game:GetService('RunService')\n\nlocal player = Players.LocalPlayer\n\n-- Settings (change these)\nlocal WALK_SPEED = 16\nlocal SPRINT_SPEED = 28\nlocal MAX_STAMINA = 100\nlocal DRAIN_RATE = 25 -- lost per second while sprinting\nlocal REGEN_RATE = 15 -- gained per second while resting\nlocal REGEN_DELAY = 1 -- seconds before it starts refilling\nlocal RECOVER_AT = 25 -- stamina needed after getting tired\nlocal NORMAL_FOV = 70\nlocal SPRINT_FOV = 80\n\nlocal stamina = MAX_STAMINA\nlocal sprintHeld = false\nlocal exhausted = false\nlocal lastSprint = 0\nlocal barVisible = false\nlocal fovBoosted = false\n\n-- Build the UI\nlocal gui = Instance.new('ScreenGui')\ngui.Name = 'StaminaUI'\ngui.ResetOnSpawn = false\ngui.Parent = player:WaitForChild('PlayerGui')\n\nlocal holder = Instance.new('CanvasGroup')\nholder.AnchorPoint = Vector2.new(0.5, 1)\nholder.Position = UDim2.new(0.5, 0, 1, -40)\nholder.Size = UDim2.new(0, 300, 0, 24)\nholder.BackgroundColor3 = Color3.fromRGB(18, 20, 28)\nholder.GroupTransparency = 1\nholder.Parent = gui\nInstance.new('UICorner', holder).CornerRadius = UDim.new(0, 12)\n\nlocal fill = Instance.new('Frame')\nfill.Size = UDim2.new(1, 0, 1, 0)\nfill.BackgroundColor3 = Color3.fromRGB(0, 200, 255)\nfill.BorderSizePixel = 0\nfill.Parent = holder\nInstance.new('UICorner', fill).CornerRadius = UDim.new(0, 12)\n\nlocal shine = Instance.new('UIGradient')\nshine.Color = ColorSequence.new(Color3.new(1, 1, 1), Color3.fromRGB(150, 150, 150))\nshine.Rotation = 90\nshine.Parent = fill\n\nlocal label = Instance.new('TextLabel')\nlabel.Size = UDim2.new(1, 0, 1, 0)\nlabel.BackgroundTransparency = 1\nlabel.Text = 'Stamina'\nlabel.Font = Enum.Font.GothamBold\nlabel.TextSize = 13\nlabel.TextColor3 = Color3.new(1, 1, 1)\nlabel.TextStrokeTransparency = 0.6\nlabel.ZIndex = 2\nlabel.Parent = holder\n\n-- Smooth animations\nlocal info = TweenInfo.new(0.25, Enum.EasingStyle.Quad)\n\nlocal function showBar(show)\n  if show == barVisible then return end\n  barVisible = show\n  TweenService:Create(holder, info, {GroupTransparency = show and 0 or 1}):Play()\nend\n\nlocal function boostFov(on)\n  if on == fovBoosted then return end\n  fovBoosted = on\n  TweenService:Create(workspace.CurrentCamera, info, {FieldOfView = on and SPRINT_FOV or NORMAL_FOV}):Play()\nend\n\n-- Input (Left Shift)\nUserInputService.InputBegan:Connect(function(input, processed)\n  if processed then return end\n  if input.KeyCode == Enum.KeyCode.LeftShift then\n    sprintHeld = true\n  end\nend)\n\nUserInputService.InputEnded:Connect(function(input)\n  if input.KeyCode == Enum.KeyCode.LeftShift then\n    sprintHeld = false\n  end\nend)\n\n-- Main loop\nRunService.Heartbeat:Connect(function(dt)\n  local char = player.Character\n  local hum = char and char:FindFirstChildOfClass('Humanoid')\n  if not hum then return end\n\n  local moving = hum.MoveDirection.Magnitude > 0\n  local sprinting = sprintHeld and moving and not exhausted\n\n  if sprinting then\n    stamina = math.max(0, stamina - DRAIN_RATE * dt)\n    lastSprint = os.clock()\n    hum.WalkSpeed = SPRINT_SPEED\n    if stamina <= 0 then\n      exhausted = true\n    end\n  else\n    hum.WalkSpeed = WALK_SPEED\n    if os.clock() - lastSprint > REGEN_DELAY then\n      stamina = math.min(MAX_STAMINA, stamina + REGEN_RATE * dt)\n      if exhausted and stamina >= RECOVER_AT then\n        exhausted = false\n      end\n    end\n  end\n\n  -- Update the bar\n  local ratio = stamina / MAX_STAMINA\n  fill.Size = UDim2.new(ratio, 0, 1, 0)\n  local red = Color3.fromRGB(255, 70, 70)\n  local blue = Color3.fromRGB(0, 200, 255)\n  fill.BackgroundColor3 = exhausted and red or red:Lerp(blue, ratio)\n  label.Text = exhausted and 'Tired!' or 'Stamina'\n\n  showBar(sprinting or stamina < MAX_STAMINA)\n  boostFov(sprinting)\nend)"
+      }
+    ],
+    "models": [],
+    "notes": [
+      "This is a LocalScript, so it must go in StarterPlayerScripts. A normal Script will not work.",
+      "Sprint uses Left Shift, so it works on PC. For mobile you would need an on-screen button.",
+      "The bar hides itself when stamina is full, and it fades back in when you run.",
+      "If the camera looks wrong, set NORMAL_FOV to match your game's field of view (the Roblox default is 70)."
+    ]
   }
 ]
