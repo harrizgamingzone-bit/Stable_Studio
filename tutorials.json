@@ -87,5 +87,223 @@
       "The bar hides itself when stamina is full, and it fades back in when you run.",
       "If the camera looks wrong, set NORMAL_FOV to match your game's field of view (the Roblox default is 70)."
     ]
+  },
+  {
+    "id": "shift-lock",
+    "title": "Custom Shift Lock (PC + Mobile)",
+    "difficulty": "Intermediate",
+    "tags": ["Scripting", "Camera", "Mobile"],
+    "description": "Lock the camera over the shoulder so your character always faces where you look, with a toggle key and an on-screen LOCK button for phones.",
+    "youtube": "",
+    "steps": [
+      "Open your game in Roblox Studio.",
+      "In the Explorer window, find StarterPlayer, then StarterPlayerScripts inside it.",
+      "Hover over StarterPlayerScripts, tap the + button, and choose LocalScript.",
+      "Delete the starter code inside the LocalScript.",
+      "Paste the script below.",
+      "Change TOGGLE_KEY if you want a different key, and CAMERA_OFFSET to move the camera closer or further over the shoulder.",
+      "Press Play. On PC press Left Control to turn it on or off. On mobile tap the LOCK button."
+    ],
+    "scripts": [
+      {
+        "name": "CustomShiftLock",
+        "location": "StarterPlayer → StarterPlayerScripts → LocalScript",
+        "code": "local Players = game:GetService('Players')\nlocal UserInputService = game:GetService('UserInputService')\nlocal RunService = game:GetService('RunService')\n\nlocal player = Players.LocalPlayer\nlocal camera = workspace.CurrentCamera\n\n-- Settings (change these)\nlocal TOGGLE_KEY = Enum.KeyCode.LeftControl\nlocal CAMERA_OFFSET = Vector3.new(1.75, 0.5, 0) -- shoulder view\n\nlocal CYAN = Color3.fromRGB(0, 200, 255)\nlocal DARK = Color3.fromRGB(18, 20, 28)\nlocal GREY = Color3.fromRGB(80, 85, 100)\n\nlocal locked = false\n\nlocal function applyLock(on)\n  locked = on\n  local char = player.Character\n  local hum = char and char:FindFirstChildOfClass('Humanoid')\n  if hum then\n    hum.AutoRotate = not on\n    hum.CameraOffset = on and CAMERA_OFFSET or Vector3.new(0, 0, 0)\n  end\n  if not on then\n    UserInputService.MouseBehavior = Enum.MouseBehavior.Default\n  end\nend\n\n-- Toggle button (shows on phones and tablets)\nlocal gui = Instance.new('ScreenGui')\ngui.Name = 'ShiftLockUI'\ngui.ResetOnSpawn = false\ngui.Parent = player:WaitForChild('PlayerGui')\n\nlocal button = Instance.new('TextButton')\nbutton.AnchorPoint = Vector2.new(1, 1)\nbutton.Position = UDim2.new(1, -35, 1, -290)\nbutton.Size = UDim2.new(0, 56, 0, 56)\nbutton.BackgroundColor3 = DARK\nbutton.AutoButtonColor = false\nbutton.Text = 'LOCK'\nbutton.Font = Enum.Font.GothamBold\nbutton.TextSize = 13\nbutton.TextColor3 = Color3.new(1, 1, 1)\nbutton.Visible = UserInputService.TouchEnabled\nbutton.Parent = gui\nInstance.new('UICorner', button).CornerRadius = UDim.new(1, 0)\n\nlocal stroke = Instance.new('UIStroke')\nstroke.Color = GREY\nstroke.Thickness = 3\nstroke.Parent = button\n\nlocal function toggle()\n  applyLock(not locked)\n  stroke.Color = locked and CYAN or GREY\nend\n\nbutton.Activated:Connect(toggle)\n\nUserInputService.InputBegan:Connect(function(input, processed)\n  if processed then return end\n  if input.KeyCode == TOGGLE_KEY then\n    toggle()\n  end\nend)\n\n-- Turn the character toward where the camera looks\nRunService.RenderStepped:Connect(function()\n  if not locked then return end\n  local char = player.Character\n  local root = char and char:FindFirstChild('HumanoidRootPart')\n  if not root then return end\n  UserInputService.MouseBehavior = Enum.MouseBehavior.LockCenter\n  local look = camera.CFrame.LookVector\n  root.CFrame = CFrame.new(root.Position, root.Position + Vector3.new(look.X, 0, look.Z))\nend)\n\nplayer.CharacterAdded:Connect(function()\n  task.wait()\n  applyLock(locked)\nend)"
+      }
+    ],
+    "models": [],
+    "notes": [
+      "This is a LocalScript, so it must go in StarterPlayerScripts.",
+      "The key is Left Control, not Shift, so it does not clash with the Sprint tutorial. You can change TOGGLE_KEY to anything.",
+      "Roblox also has a built-in shift lock. It is the EnableMouseLockOption property on StarterPlayer, and players use the Shift key. Use this script when you want your own key and a mobile button.",
+      "The LOCK button sits above the RUN button. Change the -290 value in Position to move it.",
+      "On phones the camera is turned by dragging the screen, and the character follows where the camera points."
+    ]
+  },
+  {
+    "id": "coin-collector",
+    "title": "Coin Collector with Leaderboard",
+    "difficulty": "Beginner",
+    "tags": ["Scripting", "Leaderboard"],
+    "description": "Touch coins to earn points that show on the player list, and the coins come back after a few seconds.",
+    "youtube": "",
+    "steps": [
+      "Open your game in Roblox Studio.",
+      "In ServerScriptService, add a Script named Leaderstats and paste Script 1 below.",
+      "Insert a Part, make it a flat gold coin shape, and name it Coin.",
+      "Turn on Anchored and turn off CanCollide so players walk through it.",
+      "Insert a Script into the Coin and paste Script 2 below.",
+      "Copy and paste the Coin as many times as you want around the map.",
+      "Press Play and walk into the coins. Your Coins number shows in the top right."
+    ],
+    "scripts": [
+      {
+        "name": "Leaderstats",
+        "location": "ServerScriptService → Script",
+        "code": "local Players = game:GetService('Players')\n\nPlayers.PlayerAdded:Connect(function(player)\n  local stats = Instance.new('Folder')\n  stats.Name = 'leaderstats'\n  stats.Parent = player\n\n  local coins = Instance.new('IntValue')\n  coins.Name = 'Coins'\n  coins.Value = 0\n  coins.Parent = stats\nend)"
+      },
+      {
+        "name": "CoinScript",
+        "location": "Coin → Script",
+        "code": "local coin = script.Parent\nlocal VALUE = 1 -- coins given per pickup\nlocal RESPAWN_TIME = 5 -- seconds until the coin returns\nlocal collected = false\n\ncoin.Touched:Connect(function(hit)\n  if collected then return end\n\n  local player = game.Players:GetPlayerFromCharacter(hit.Parent)\n  if not player then return end\n\n  collected = true\n  player.leaderstats.Coins.Value += VALUE\n\n  coin.Transparency = 1\n  task.wait(RESPAWN_TIME)\n  coin.Transparency = 0\n  collected = false\nend)"
+      }
+    ],
+    "models": [],
+    "notes": [
+      "The folder must be named leaderstats in lowercase, or Roblox will not show the scoreboard.",
+      "If you add the Save Data tutorial later, delete the Leaderstats script from this one. The Save Data script creates leaderstats already.",
+      "Change VALUE to make rare coins worth more."
+    ]
+  },
+  {
+    "id": "checkpoints",
+    "title": "Checkpoint System",
+    "difficulty": "Beginner",
+    "tags": ["Scripting", "Obby"],
+    "description": "Players respawn at the last checkpoint they touched, perfect for obbies.",
+    "youtube": "",
+    "steps": [
+      "Open your game in Roblox Studio.",
+      "In the Model tab, choose Spawn to insert a SpawnLocation. Name it Checkpoint1.",
+      "In the Properties window, turn on Anchored, turn off Neutral, and set TeamColor if you use teams. For a game with no teams, leave Neutral on.",
+      "Insert a Script into the Checkpoint and paste the script below.",
+      "Copy and paste the Checkpoint further along your obby and rename each one.",
+      "Press Play, touch a checkpoint, then reset your character. You should respawn there."
+    ],
+    "scripts": [
+      {
+        "name": "CheckpointScript",
+        "location": "Checkpoint → Script",
+        "code": "local checkpoint = script.Parent\n\ncheckpoint.Touched:Connect(function(hit)\n  local player = game.Players:GetPlayerFromCharacter(hit.Parent)\n  if player and player.RespawnLocation ~= checkpoint then\n    player.RespawnLocation = checkpoint\n  end\nend)"
+      }
+    ],
+    "models": [],
+    "notes": [
+      "The checkpoint must be a SpawnLocation, not a normal Part, or RespawnLocation will not work.",
+      "Keep Neutral on if your game has no teams.",
+      "Put the main spawn at the start of the map so new players begin there."
+    ]
+  },
+  {
+    "id": "teleport-pad",
+    "title": "Teleport Pad",
+    "difficulty": "Beginner",
+    "tags": ["Scripting", "Models"],
+    "description": "Step on a pad and get teleported to another spot in your map.",
+    "youtube": "",
+    "steps": [
+      "Open your game in Roblox Studio.",
+      "Insert a Part for the pad and name it TeleportPad. Turn on Anchored.",
+      "Insert another Part where you want players to land and name it TeleportDestination. Turn on Anchored.",
+      "Make sure TeleportDestination is directly inside Workspace, not inside a model.",
+      "Insert a Script into TeleportPad and paste the script below.",
+      "Press Play and step on the pad."
+    ],
+    "scripts": [
+      {
+        "name": "TeleportScript",
+        "location": "TeleportPad → Script",
+        "code": "local pad = script.Parent\nlocal destination = workspace:WaitForChild('TeleportDestination')\nlocal COOLDOWN = 2 -- seconds before the pad works again\nlocal busy = false\n\npad.Touched:Connect(function(hit)\n  if busy then return end\n\n  local hum = hit.Parent:FindFirstChildOfClass('Humanoid')\n  local root = hit.Parent:FindFirstChild('HumanoidRootPart')\n  if not hum or not root then return end\n\n  busy = true\n  root.CFrame = destination.CFrame + Vector3.new(0, 4, 0)\n  task.wait(COOLDOWN)\n  busy = false\nend)"
+      }
+    ],
+    "models": [],
+    "notes": [
+      "The + Vector3.new(0, 4, 0) lifts players above the destination so they do not get stuck inside it.",
+      "For two-way teleporting, make a second pad that sends players back to the first one.",
+      "Turn off CanCollide on the destination if you want it to be invisible."
+    ]
+  },
+  {
+    "id": "lava-brick",
+    "title": "Lava Brick",
+    "difficulty": "Beginner",
+    "tags": ["Scripting", "Obby"],
+    "description": "A brick that hurts or instantly kills players who touch it.",
+    "youtube": "",
+    "steps": [
+      "Open your game in Roblox Studio.",
+      "Insert a Part, set its Material to Neon, and set the Color to orange or red.",
+      "Turn on Anchored.",
+      "Insert a Script into the Part and paste the script below.",
+      "Set DAMAGE to 100 to kill instantly, or something like 10 for slow damage.",
+      "Press Play and touch the lava."
+    ],
+    "scripts": [
+      {
+        "name": "LavaScript",
+        "location": "Lava Part → Script",
+        "code": "local lava = script.Parent\nlocal DAMAGE = 100 -- 100 kills instantly, 10 hurts slowly\nlocal DELAY = 1 -- seconds between hits on the same player\nlocal recentlyHit = {}\n\nlava.Touched:Connect(function(hit)\n  local hum = hit.Parent:FindFirstChildOfClass('Humanoid')\n  if not hum or hum.Health <= 0 then return end\n  if recentlyHit[hum] then return end\n\n  recentlyHit[hum] = true\n  hum:TakeDamage(DAMAGE)\n  task.wait(DELAY)\n  recentlyHit[hum] = nil\nend)"
+      }
+    ],
+    "models": [],
+    "notes": [
+      "Players with a ForceField, like the spawn protection one, take no damage.",
+      "Copy the same brick for every lava part so you only write the script once."
+    ]
+  },
+  {
+    "id": "shop-gui",
+    "title": "Shop GUI with Cash",
+    "difficulty": "Intermediate",
+    "tags": ["Scripting", "UI"],
+    "description": "Open a shop menu and buy upgrades with cash. The server checks every purchase so exploiters cannot cheat.",
+    "youtube": "",
+    "steps": [
+      "Open your game in Roblox Studio.",
+      "In ServerScriptService, add a Script named ShopServer and paste Script 1 below. It makes the cash leaderboard and a RemoteEvent for you.",
+      "In StarterPlayer → StarterPlayerScripts, add a LocalScript named ShopClient and paste Script 2 below. It builds the whole menu by itself.",
+      "Press Play, tap the Shop button on the left, and buy an item.",
+      "To add items, add a price to the ITEMS list in the server script, add a matching line in giveItem, and add an addItem line in the client script."
+    ],
+    "scripts": [
+      {
+        "name": "ShopServer",
+        "location": "ServerScriptService → Script",
+        "code": "local Players = game:GetService('Players')\nlocal ReplicatedStorage = game:GetService('ReplicatedStorage')\n\n-- Prices live on the server so players cannot cheat\nlocal ITEMS = {\n  HighJump = 100,\n  Glow = 50,\n}\n\nlocal buyEvent = Instance.new('RemoteEvent')\nbuyEvent.Name = 'BuyItem'\nbuyEvent.Parent = ReplicatedStorage\n\nPlayers.PlayerAdded:Connect(function(player)\n  local stats = Instance.new('Folder')\n  stats.Name = 'leaderstats'\n  stats.Parent = player\n\n  local cash = Instance.new('IntValue')\n  cash.Name = 'Cash'\n  cash.Value = 200 -- starting cash\n  cash.Parent = stats\nend)\n\nlocal function giveItem(player, itemName)\n  local char = player.Character\n  local hum = char and char:FindFirstChildOfClass('Humanoid')\n  local root = char and char:FindFirstChild('HumanoidRootPart')\n  if not hum or not root then return false end\n\n  if itemName == 'HighJump' then\n    hum.UseJumpPower = true\n    hum.JumpPower = 90\n  elseif itemName == 'Glow' then\n    local light = Instance.new('PointLight')\n    light.Range = 20\n    light.Brightness = 3\n    light.Parent = root\n  end\n  return true\nend\n\nbuyEvent.OnServerEvent:Connect(function(player, itemName)\n  local price = ITEMS[itemName]\n  if not price then return end\n\n  local cash = player.leaderstats.Cash\n  if cash.Value >= price and giveItem(player, itemName) then\n    cash.Value -= price\n  end\nend)"
+      },
+      {
+        "name": "ShopClient",
+        "location": "StarterPlayer → StarterPlayerScripts → LocalScript",
+        "code": "local Players = game:GetService('Players')\nlocal ReplicatedStorage = game:GetService('ReplicatedStorage')\n\nlocal player = Players.LocalPlayer\nlocal buyEvent = ReplicatedStorage:WaitForChild('BuyItem')\n\nlocal DARK = Color3.fromRGB(18, 20, 28)\nlocal CYAN = Color3.fromRGB(0, 200, 255)\n\nlocal gui = Instance.new('ScreenGui')\ngui.Name = 'ShopUI'\ngui.ResetOnSpawn = false\ngui.Parent = player:WaitForChild('PlayerGui')\n\nlocal openButton = Instance.new('TextButton')\nopenButton.Size = UDim2.new(0, 90, 0, 40)\nopenButton.Position = UDim2.new(0, 15, 0.5, 0)\nopenButton.BackgroundColor3 = CYAN\nopenButton.Text = 'Shop'\nopenButton.Font = Enum.Font.GothamBold\nopenButton.TextSize = 16\nopenButton.TextColor3 = DARK\nopenButton.Parent = gui\nInstance.new('UICorner', openButton).CornerRadius = UDim.new(0, 10)\n\nlocal frame = Instance.new('Frame')\nframe.Size = UDim2.new(0, 230, 0, 150)\nframe.Position = UDim2.new(0, 115, 0.5, 0)\nframe.BackgroundColor3 = DARK\nframe.Visible = false\nframe.Parent = gui\nInstance.new('UICorner', frame).CornerRadius = UDim.new(0, 12)\n\nlocal layout = Instance.new('UIListLayout')\nlayout.Padding = UDim.new(0, 8)\nlayout.HorizontalAlignment = Enum.HorizontalAlignment.Center\nlayout.Parent = frame\n\nlocal padding = Instance.new('UIPadding')\npadding.PaddingTop = UDim.new(0, 12)\npadding.Parent = frame\n\nlocal function addItem(itemName, label)\n  local b = Instance.new('TextButton')\n  b.Size = UDim2.new(1, -24, 0, 44)\n  b.BackgroundColor3 = Color3.fromRGB(40, 44, 58)\n  b.Text = label\n  b.Font = Enum.Font.GothamBold\n  b.TextSize = 15\n  b.TextColor3 = Color3.new(1, 1, 1)\n  b.Parent = frame\n  Instance.new('UICorner', b).CornerRadius = UDim.new(0, 8)\n  b.Activated:Connect(function()\n    buyEvent:FireServer(itemName)\n  end)\nend\n\naddItem('HighJump', 'High Jump - 100 Cash')\naddItem('Glow', 'Glow - 50 Cash')\n\nopenButton.Activated:Connect(function()\n  frame.Visible = not frame.Visible\nend)"
+      }
+    ],
+    "models": [],
+    "notes": [
+      "Never trust the client. The client only says which item it wants, and the server checks the price and takes the cash.",
+      "The upgrades reset when you die. To keep them, save the items in a DataStore (see the Save Data tutorial).",
+      "If you use the Coin Collector tutorial, delete its Leaderstats script. This one already creates leaderstats, and you can add a Coins value next to Cash.",
+      "This shop does not touch WalkSpeed, so it works alongside the Sprint tutorial."
+    ]
+  },
+  {
+    "id": "save-data",
+    "title": "Save Player Data (DataStore)",
+    "difficulty": "Advanced",
+    "tags": ["Scripting", "Advanced", "Data"],
+    "description": "Save and load Coins and Level between sessions with retries, autosave, and a safe shutdown save.",
+    "youtube": "",
+    "steps": [
+      "Publish your game to Roblox first. DataStores do not work in an unsaved place.",
+      "In Studio, open Game Settings → Security and turn on Enable Studio Access to API Services. Save.",
+      "In ServerScriptService, add a Script named PlayerData and paste the script below.",
+      "If you already made a leaderstats script from another tutorial, delete it. This script creates leaderstats with Coins and Level.",
+      "Press Play, change your Coins value in the Explorer (under the Players folder), then stop and play again to see it saved.",
+      "Check the Output window for any warnings. Failed saves print there."
+    ],
+    "scripts": [
+      {
+        "name": "PlayerData",
+        "location": "ServerScriptService → Script",
+        "code": "local Players = game:GetService('Players')\nlocal DataStoreService = game:GetService('DataStoreService')\n\nlocal store = DataStoreService:GetDataStore('PlayerData_v1')\n\nlocal AUTOSAVE_SECONDS = 60\nlocal RETRIES = 3\nlocal DEFAULT_DATA = { Coins = 0, Level = 1 }\n\nlocal sessionData = {}\n\nlocal function loadData(userId)\n  for attempt = 1, RETRIES do\n    local ok, result = pcall(function()\n      return store:GetAsync('Player_' .. userId)\n    end)\n    if ok then\n      return result or table.clone(DEFAULT_DATA)\n    end\n    warn('Load failed (try ' .. attempt .. '): ' .. tostring(result))\n    task.wait(2)\n  end\n  return nil\nend\n\nlocal function saveData(player)\n  local data = sessionData[player.UserId]\n  local stats = player:FindFirstChild('leaderstats')\n  if not data or not stats then return end\n\n  data.Coins = stats.Coins.Value\n  data.Level = stats.Level.Value\n\n  for attempt = 1, RETRIES do\n    local ok, err = pcall(function()\n      store:SetAsync('Player_' .. player.UserId, data)\n    end)\n    if ok then return end\n    warn('Save failed (try ' .. attempt .. '): ' .. tostring(err))\n    task.wait(2)\n  end\nend\n\nlocal function onJoin(player)\n  local data = loadData(player.UserId)\n  if not data then\n    player:Kick('Could not load your data. Please rejoin.')\n    return\n  end\n  sessionData[player.UserId] = data\n\n  local stats = Instance.new('Folder')\n  stats.Name = 'leaderstats'\n\n  local coins = Instance.new('IntValue')\n  coins.Name = 'Coins'\n  coins.Value = data.Coins\n  coins.Parent = stats\n\n  local level = Instance.new('IntValue')\n  level.Name = 'Level'\n  level.Value = data.Level\n  level.Parent = stats\n\n  stats.Parent = player\nend\n\nPlayers.PlayerAdded:Connect(onJoin)\nfor _, player in ipairs(Players:GetPlayers()) do\n  task.spawn(onJoin, player)\nend\n\nPlayers.PlayerRemoving:Connect(function(player)\n  saveData(player)\n  sessionData[player.UserId] = nil\nend)\n\n-- Autosave\ntask.spawn(function()\n  while true do\n    task.wait(AUTOSAVE_SECONDS)\n    for _, player in ipairs(Players:GetPlayers()) do\n      task.spawn(saveData, player)\n    end\n  end\nend)\n\n-- Save everyone when the server shuts down\ngame:BindToClose(function()\n  for _, player in ipairs(Players:GetPlayers()) do\n    task.spawn(saveData, player)\n  end\n  task.wait(3)\nend)"
+      }
+    ],
+    "models": [],
+    "notes": [
+      "Everything goes through pcall because DataStore calls can fail. Without it, one failed request would crash the script.",
+      "If loading fails, the player is kicked instead of being given empty data. Otherwise their next save would wipe their real progress.",
+      "Change 'PlayerData_v1' to 'PlayerData_v2' if you ever want to reset everyone's data.",
+      "SetAsync is the simple option. For big games, upgrade to UpdateAsync and session locking so two servers cannot overwrite each other.",
+      "Works with the Coin Collector script. Its coins add to leaderstats.Coins, and this script saves that value."
+    ]
   }
 ]
