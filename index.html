@@ -12,10 +12,11 @@ body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 Inter,system-
 h1,h2,h3,.logo{font-family:'Space Grotesk',sans-serif;line-height:1.15}
 a{color:var(--accent)}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-header{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding:14px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+header{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding:12px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px}
 .logo{font-weight:700;font-size:1.2rem;color:var(--text);text-decoration:none}
 .blk{background:var(--accent);color:#04121a;padding:2px 8px;border-radius:6px;margin-left:2px}
-nav a{margin-left:16px;text-decoration:none;color:var(--mute)}
+nav{display:flex;align-items:center;gap:14px;flex-wrap:wrap;justify-content:flex-end}
+nav a{text-decoration:none;color:var(--mute)}
 main{max-width:960px;margin:0 auto;padding:28px 20px 60px}
 .hero h1{font-size:clamp(2rem,6vw,3.4rem);margin:20px 0 8px}
 .hero p{color:var(--mute);max-width:52ch}
@@ -38,28 +39,139 @@ input[type=search]{width:100%;padding:12px 14px;border-radius:8px;border:1px sol
 .code{background:var(--code);border:1px solid var(--line);border-radius:8px;margin:14px 0;overflow:hidden}
 .code .bar{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 12px;border-bottom:1px solid var(--line);font-size:.88rem;color:var(--mute)}
 .code pre{margin:0;padding:14px;overflow-x:auto;font:400 .88rem/1.55 'JetBrains Mono',monospace;color:#d6deeb}
-.copy{background:var(--accent);color:#04121a;border:0;border-radius:6px;padding:5px 12px;cursor:pointer;font:inherit;font-weight:500}
+.copy,.btn{background:var(--accent);color:#04121a;border:0;border-radius:6px;padding:6px 14px;cursor:pointer;font:inherit;font-weight:500}
+.btn:disabled{opacity:.6;cursor:wait}
 .model{display:flex;flex-wrap:wrap;gap:10px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin:10px 0}
 .model b{flex:1 1 140px}.model code{font-family:'JetBrains Mono',monospace;color:var(--accent)}
 .note{border-left:4px solid var(--warn);background:var(--panel);padding:10px 14px;margin:10px 0;border-radius:0 8px 8px 0}
+.lock{border:1px dashed var(--line);border-radius:8px;padding:20px;text-align:center;color:var(--mute)}
 .video{position:relative;padding-top:56.25%;margin:14px 0}.video iframe{position:absolute;inset:0;width:100%;height:100%;border:0;border-radius:8px}
 .kw{color:#c792ea}.str{color:#ecc48d}.cm{color:#637777}.num{color:#f78c6c}
 footer{border-top:1px solid var(--line);padding:24px 20px;text-align:center;color:var(--mute)}
 .empty{color:var(--mute);padding:30px 0}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;padding:20px;z-index:20}
+.modal[hidden]{display:none}
+.box{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:24px;width:100%;max-width:380px}
+.box h2{margin:0 0 10px}
+.box input[type=email],.box input[type=password]{width:100%;padding:12px 14px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--text);font:inherit;margin:8px 0}
+.x{position:absolute;top:8px;right:12px;background:none;border:0;color:var(--mute);font-size:1.6rem;cursor:pointer}
+.agree{display:flex;gap:8px;align-items:flex-start;font-size:.9rem;color:var(--mute);margin:8px 0}
+.big{width:100%;padding:12px;margin-top:8px}
+.msg{min-height:1.2em;color:var(--warn);font-size:.9rem;margin:10px 0 0}
+.swap{font-size:.9rem;color:var(--mute);text-align:center;margin-bottom:0}
 </style>
 </head>
 <body>
 <header>
   <a class="logo" href="#">Stable <span class="blk">Studio</span></a>
-  <nav><a href="https://discord.gg/YOUR_INVITE">Discord</a><a href="https://youtube.com/@YOUR_CHANNEL">YouTube</a></nav>
+  <nav>
+    <a href="https://discord.gg/YOUR_INVITE">Discord</a>
+    <a href="https://youtube.com/@YOUR_CHANNEL">YouTube</a>
+    <button class="btn" id="authBtn">Log in</button>
+  </nav>
 </header>
+
 <main id="app"><p class="empty">Loading tutorials…</p></main>
-<footer>Made by Stable_Light6 · Join the <a href="https://discord.gg/cjBHFb4p8">Discord</a> · Subscribe on <a href="https://youtube.com/@stable_lite">YouTube</a></footer>
+
+<footer>Made by Stable_Light6 · <a href="terms.html">Terms &amp; Privacy</a> · <a href="https://discord.gg/YOUR_INVITE">Discord</a> · <a href="https://youtube.com/@YOUR_CHANNEL">YouTube</a><br><small>Not affiliated with Roblox Corporation.</small></footer>
+
+<div id="modal" class="modal" hidden>
+  <div class="box" role="dialog" aria-modal="true" aria-labelledby="mtitle">
+    <button class="x" id="mclose" aria-label="Close">×</button>
+    <h2 id="mtitle">Log in</h2>
+    <input type="email" id="emailEl" placeholder="Email" autocomplete="email">
+    <input type="password" id="passEl" placeholder="Password (8+ characters)" autocomplete="current-password">
+    <label class="agree" id="agreeRow" hidden><input type="checkbox" id="agreeEl"><span>I am 13 or older and agree to the <a href="terms.html" target="_blank" rel="noopener">Terms and Privacy Policy</a>.</span></label>
+    <button class="btn big" id="submitBtn">Log in</button>
+    <p class="msg" id="msg" role="status"></p>
+    <p class="swap"><a href="#" id="swap">Need an account? Sign up</a><span id="forgotWrap"> · <a href="#" id="forgot">Forgot password?</a></span></p>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.0/dist/umd/supabase.js"></script>
 <script>
+// ===== PASTE YOUR SUPABASE DETAILS HERE (anon/publishable key only) =====
+const SUPABASE_URL="PASTE_PROJECT_URL";
+const SUPABASE_KEY="PASTE_ANON_PUBLIC_KEY";
+// ========================================================================
+
 let DATA=[],activeTag="All",query="";
 const app=document.getElementById("app");
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const $=id=>document.getElementById(id);
 
+/* ---------- Auth ---------- */
+let sb=null,user=null,mode="login";
+if(!SUPABASE_URL.startsWith("PASTE")&&window.supabase){
+  sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+  sb.auth.getSession().then(({data})=>{user=data.session?data.session.user:null;updateAuth()});
+  sb.auth.onAuthStateChange((ev,session)=>{
+    user=session?session.user:null;
+    updateAuth();
+    if(ev==="PASSWORD_RECOVERY")openModal("reset");
+  });
+}
+
+function updateAuth(){
+  $("authBtn").textContent=user?"Log out":"Log in";
+  if(DATA.length)route();
+}
+
+function setMsg(t){$("msg").textContent=t}
+
+function openModal(m){
+  mode=m;setMsg("");
+  $("passEl").value="";
+  $("emailEl").hidden=(m==="reset");
+  $("agreeRow").hidden=(m!=="signup");
+  $("forgotWrap").hidden=(m!=="login");
+  $("swap").hidden=(m==="reset");
+  $("mtitle").textContent=m==="login"?"Log in":m==="signup"?"Create account":"Set a new password";
+  $("submitBtn").textContent=m==="login"?"Log in":m==="signup"?"Sign up":"Save password";
+  $("swap").textContent=m==="login"?"Need an account? Sign up":"Have an account? Log in";
+  $("passEl").autocomplete=m==="login"?"current-password":"new-password";
+  $("modal").hidden=false;
+  (m==="reset"?$("passEl"):$("emailEl")).focus();
+}
+function closeModal(){$("modal").hidden=true}
+
+$("authBtn").onclick=async()=>{
+  if(user&&sb){await sb.auth.signOut()}else{openModal("login")}
+};
+$("mclose").onclick=closeModal;
+$("modal").addEventListener("click",e=>{if(e.target===$("modal"))closeModal()});
+addEventListener("keydown",e=>{if(e.key==="Escape")closeModal()});
+$("swap").onclick=e=>{e.preventDefault();openModal(mode==="login"?"signup":"login")};
+$("forgot").onclick=async e=>{
+  e.preventDefault();
+  if(!sb)return setMsg("Login is not set up yet.");
+  const email=$("emailEl").value.trim();
+  if(!email)return setMsg("Type your email first, then tap Forgot password.");
+  const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:location.origin});
+  setMsg(error?error.message:"Check your email for a reset link.");
+};
+
+$("submitBtn").onclick=async()=>{
+  setMsg("");
+  if(!sb)return setMsg("Login is not set up yet.");
+  const email=$("emailEl").value.trim(),pass=$("passEl").value;
+  if(mode!=="reset"&&!email)return setMsg("Enter your email.");
+  if(pass.length<8)return setMsg("Password must be at least 8 characters.");
+  if(mode==="signup"&&!$("agreeEl").checked)return setMsg("Please agree to the Terms first.");
+  $("submitBtn").disabled=true;
+  let res;
+  try{
+    if(mode==="login")res=await sb.auth.signInWithPassword({email,password:pass});
+    else if(mode==="signup")res=await sb.auth.signUp({email,password:pass,options:{emailRedirectTo:location.origin}});
+    else res=await sb.auth.updateUser({password:pass});
+  }catch(err){res={error:{message:"Something went wrong. Try again."}}}
+  $("submitBtn").disabled=false;
+  if(res.error)return setMsg(res.error.message);
+  if(mode==="signup"&&!(res.data&&res.data.session))return setMsg("Check your email to confirm your account, then log in.");
+  closeModal();
+};
+
+/* ---------- Site ---------- */
 function highlight(code){
   let h=esc(code);
   h=h.replace(/(--[^\n]*)/g,'<span class="cm">$1</span>');
@@ -75,28 +187,32 @@ function home(){
   app.innerHTML=`<section class="hero"><h1>Roblox Studio tutorials you can copy and paste</h1><p>Scripts, model IDs and step-by-step instructions for every build.</p></section>
   <input type="search" id="q" placeholder="Search tutorials" value="${esc(query)}" aria-label="Search tutorials">
   <div class="tags">${tags.map(t=>`<button class="${t===activeTag?"on":""}" data-tag="${esc(t)}">${esc(t)}</button>`).join("")}</div>
-  <div class="grid">${list.map(t=>`<a class="card" href="#${esc(t.id)}"><span class="badge ${esc(t.difficulty)}">${esc(t.difficulty)}</span><h3>${esc(t.title)}</h3><p>${esc(t.description)}</p></a>`).join("")||'<p class="empty">No tutorials match. Try another search or tag.</p>'}</div>`;
-  const q=document.getElementById("q");
-  q.addEventListener("input",e=>{query=e.target.value.toLowerCase();const pos=e.target.selectionStart;home();const n=document.getElementById("q");n.focus();n.setSelectionRange(pos,pos)});
+  <div class="grid">${list.map(t=>`<a class="card" href="#${esc(t.id)}"><span class="badge ${esc(t.difficulty)}">${esc(t.difficulty)}</span> ${t.members?'<span class="badge">🔒 Members</span>':''}<h3>${esc(t.title)}</h3><p>${esc(t.description)}</p></a>`).join("")||'<p class="empty">No tutorials match. Try another search or tag.</p>'}</div>`;
+  const q=$("q");
+  q.addEventListener("input",e=>{query=e.target.value.toLowerCase();const pos=e.target.selectionStart;home();const n=$("q");n.focus();n.setSelectionRange(pos,pos)});
   app.querySelectorAll("[data-tag]").forEach(b=>b.onclick=()=>{activeTag=b.dataset.tag;home()});
 }
 
 function page(t){
   document.title=t.title+" – Stable Studio";
+  const locked=t.members&&!user;
   const steps=(t.steps||[]).map(s=>{const o=typeof s==="string"?{text:s}:s;return `<li>${esc(o.text)}${o.image?`<img src="${esc(o.image)}" alt="">`:""}</li>`}).join("");
-  const scripts=(t.scripts||[]).map((s,i)=>`<div class="code"><div class="bar"><span><b>${esc(s.name)}</b> · ${esc(s.location||"")}</span><button class="copy" data-i="${i}">Copy script</button></div><pre><code>${highlight(s.code)}</code></pre></div>`).join("");
-  const models=(t.models||[]).map(m=>`<div class="model"><b>${esc(m.name)}</b><code>${esc(m.id)}</code><button class="copy" data-id="${esc(m.id)}">Copy ID</button><a href="https://create.roblox.com/store/asset/${esc(m.id)}" target="_blank" rel="noopener">Open in Creator Store</a></div>`).join("");
+  const scripts=locked?"":(t.scripts||[]).map((s,i)=>`<div class="code"><div class="bar"><span><b>${esc(s.name)}</b> · ${esc(s.location||"")}</span><button class="copy" data-i="${i}">Copy script</button></div><pre><code>${highlight(s.code)}</code></pre></div>`).join("");
+  const models=locked?"":(t.models||[]).map(m=>`<div class="model"><b>${esc(m.name)}</b><code>${esc(m.id)}</code><button class="copy" data-id="${esc(m.id)}">Copy ID</button><a href="https://create.roblox.com/store/asset/${esc(m.id)}" target="_blank" rel="noopener">Open in Creator Store</a></div>`).join("");
+  const gate=locked?`<h2>Scripts and Models</h2><div class="lock">🔒 Members only. <button class="btn" id="lockLogin">Log in or sign up</button> to see the scripts and models.</div>`:"";
   const notes=(t.notes||[]).map(n=>`<div class="note">${esc(n)}</div>`).join("");
   const vid=t.youtube?`<div class="video"><iframe src="https://www.youtube.com/embed/${esc(t.youtube)}" allowfullscreen title="Tutorial video"></iframe></div>`:"";
   app.innerHTML=`<article class="t"><a class="back" href="#">Back to all tutorials</a><span class="badge ${esc(t.difficulty)}">${esc(t.difficulty)}</span><h1>${esc(t.title)}</h1><p>${esc(t.description)}</p>${vid}
   ${steps?`<h2>Instructions</h2><ol class="steps">${steps}</ol>`:""}
+  ${gate}
   ${scripts?`<h2>Scripts</h2>${scripts}`:""}
   ${models?`<h2>Models</h2>${models}`:""}
   ${notes?`<h2>Notes</h2>${notes}`:""}</article>`;
   app.querySelectorAll(".copy").forEach(b=>b.onclick=()=>{
-    const text=b.dataset.id||t.scripts[b.dataset.i].code, label=b.textContent;
+    const text=b.dataset.id||t.scripts[b.dataset.i].code,label=b.textContent;
     navigator.clipboard.writeText(text).then(()=>{b.textContent="Copied";setTimeout(()=>b.textContent=label,1500)});
   });
+  const ll=$("lockLogin");if(ll)ll.onclick=()=>openModal("login");
   window.scrollTo(0,0);
 }
 
@@ -105,7 +221,7 @@ function route(){
   if(t)page(t);else{document.title="Stable Studio – Roblox Studio Tutorials";home()}
 }
 fetch("tutorials.json").then(r=>r.json()).then(d=>{DATA=d;route();addEventListener("hashchange",route)})
-.catch(()=>{app.innerHTML='<p class="empty">Could not load tutorials.json. Open the site through Netlify or a local server, not by double-clicking the file.</p>'});
+.catch(()=>{app.innerHTML='<p class="empty">Could not load tutorials.json. Check the file name and commas.</p>'});
 </script>
 </body>
-</html>
+  </html>
