@@ -3,24 +3,34 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Stable Studio – Roblox Studio Tutorials</title>
+<title>Stable Hub</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400&family=Inter:wght@400;500&display=swap">
 <style>
 :root{--bg:#14161c;--panel:#1d2029;--line:#2e3340;--text:#e8eaf0;--mute:#9aa1b2;--accent:#00b2ff;--warn:#ffb020;--code:#0e1015}
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 Inter,system-ui,sans-serif}
 h1,h2,h3,.logo{font-family:'Space Grotesk',sans-serif;line-height:1.15}
 a{color:var(--accent)}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-header{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding:12px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px}
-.logo{font-weight:700;font-size:1.2rem;color:var(--text);text-decoration:none}
+header{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding:10px 16px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.logo{font-weight:700;font-size:1.15rem;color:var(--text);text-decoration:none}
 .blk{background:var(--accent);color:#04121a;padding:2px 8px;border-radius:6px;margin-left:2px}
-nav{display:flex;align-items:center;gap:14px;flex-wrap:wrap;justify-content:flex-end}
-nav a{text-decoration:none;color:var(--mute)}
-main{max-width:960px;margin:0 auto;padding:28px 20px 60px}
-.hero h1{font-size:clamp(2rem,6vw,3.4rem);margin:20px 0 8px}
-.hero p{color:var(--mute);max-width:52ch}
-input[type=search]{width:100%;padding:12px 14px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--text);font:inherit;margin:20px 0 12px}
+nav{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+nav a{text-decoration:none;color:var(--mute);padding:5px 10px;border-radius:99px;font-size:.92rem}
+nav a.on{background:var(--panel);color:var(--text)}
+main{max-width:960px;margin:0 auto;padding:24px 20px 60px}
+.hero h1,.ph{font-size:clamp(2rem,6vw,3.2rem);margin:14px 0 8px}
+.hero p,.mute{color:var(--mute)}
+.hubgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin:26px 0}
+.hcard{display:block;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:22px;text-decoration:none;color:var(--text)}
+.hcard:hover{border-color:var(--accent)}
+.hcard .ic{font-size:2rem}
+.hcard h3{margin:8px 0 4px;font-size:1.3rem}
+.hcard p{margin:0;color:var(--mute);font-size:.95rem}
+.links{display:flex;gap:12px;flex-wrap:wrap;margin:10px 0 30px}
+.links a{border:1px solid var(--line);padding:8px 16px;border-radius:99px;text-decoration:none;color:var(--text)}
+input[type=search]{width:100%;padding:12px 14px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--text);font:inherit;margin:16px 0 12px}
 .tags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
 .tags button{background:var(--panel);color:var(--mute);border:1px solid var(--line);border-radius:99px;padding:6px 14px;cursor:pointer;font:inherit;font-size:.9rem}
 .tags button.on{background:var(--accent);color:#04121a;border-color:var(--accent)}
@@ -29,18 +39,21 @@ input[type=search]{width:100%;padding:12px 14px;border-radius:8px;border:1px sol
 .card:hover{border-color:var(--accent)}
 .card h3{margin:8px 0 6px;font-size:1.15rem}
 .card p{color:var(--mute);margin:0;font-size:.95rem}
+.card img{width:100%;border-radius:8px;margin-bottom:8px}
 .badge{font-size:.78rem;padding:2px 10px;border-radius:99px;border:1px solid var(--line);color:var(--mute)}
 .badge.Beginner{color:#4ade80;border-color:#4ade80}.badge.Intermediate{color:var(--warn);border-color:var(--warn)}.badge.Advanced{color:#ff6b6b;border-color:#ff6b6b}
-.back{display:inline-block;margin-bottom:14px}
+.back{display:inline-block;margin-bottom:10px}
 .t h1{font-size:clamp(1.8rem,5vw,2.6rem);margin:6px 0 8px}
-.t h2{margin:34px 0 12px;font-size:1.4rem}
+h2{margin:30px 0 12px;font-size:1.4rem}
 .steps{padding-left:22px}.steps li{margin-bottom:12px}
 .steps img{max-width:100%;border-radius:8px;display:block;margin-top:8px}
 .code{background:var(--code);border:1px solid var(--line);border-radius:8px;margin:14px 0;overflow:hidden}
 .code .bar{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 12px;border-bottom:1px solid var(--line);font-size:.88rem;color:var(--mute)}
 .code pre{margin:0;padding:14px;overflow-x:auto;font:400 .88rem/1.55 'JetBrains Mono',monospace;color:#d6deeb}
-.copy,.btn{background:var(--accent);color:#04121a;border:0;border-radius:6px;padding:6px 14px;cursor:pointer;font:inherit;font-weight:500}
-.btn:disabled{opacity:.6;cursor:wait}
+.copy,.btn{background:var(--accent);color:#04121a;border:0;border-radius:6px;padding:7px 14px;cursor:pointer;font:inherit;font-weight:500}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.ghost{background:none;border:1px solid var(--line);color:var(--mute);border-radius:6px;padding:10px;cursor:pointer;font:inherit;width:100%;margin-top:8px}
+.del{background:none;border:1px solid var(--line);color:var(--mute);border-radius:6px;padding:2px 10px;cursor:pointer;font:inherit;font-size:.8rem;margin-left:8px}
 .model{display:flex;flex-wrap:wrap;gap:10px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin:10px 0}
 .model b{flex:1 1 140px}.model code{font-family:'JetBrains Mono',monospace;color:var(--accent)}
 .note{border-left:4px solid var(--warn);background:var(--panel);padding:10px 14px;margin:10px 0;border-radius:0 8px 8px 0}
@@ -48,37 +61,58 @@ input[type=search]{width:100%;padding:12px 14px;border-radius:8px;border:1px sol
 .video{position:relative;padding-top:56.25%;margin:14px 0}.video iframe{position:absolute;inset:0;width:100%;height:100%;border:0;border-radius:8px}
 .kw{color:#c792ea}.str{color:#ecc48d}.cm{color:#637777}.num{color:#f78c6c}
 footer{border-top:1px solid var(--line);padding:24px 20px;text-align:center;color:var(--mute)}
-.empty{color:var(--mute);padding:30px 0}
+.empty{color:var(--mute);padding:24px 0}
+.row{display:flex;flex-direction:column;gap:2px;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px 16px;margin:8px 0;text-decoration:none;color:var(--text)}
+.row:hover{border-color:var(--accent)}
+.row span{color:var(--mute);font-size:.88rem}
+.form{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px;margin:14px 0;display:flex;flex-direction:column;gap:8px}
+.form input,.form textarea,.box input[type=text],.box input[type=email],.box input[type=password]{width:100%;padding:11px 13px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--text);font:inherit}
+.post{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px 16px;margin:10px 0;white-space:pre-wrap;word-wrap:break-word}
+.post small{display:block;color:var(--mute);margin-bottom:6px}
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;padding:20px;z-index:20}
-.modal[hidden]{display:none}
-.box{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:24px;width:100%;max-width:380px}
+#gate{z-index:50;background:rgba(10,11,15,.95)}
+.box{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:24px;width:100%;max-width:400px;max-height:100%;overflow:auto}
 .box h2{margin:0 0 10px}
-.box input[type=email],.box input[type=password]{width:100%;padding:12px 14px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--text);font:inherit;margin:8px 0}
+.box input{margin:6px 0}
 .x{position:absolute;top:8px;right:12px;background:none;border:0;color:var(--mute);font-size:1.6rem;cursor:pointer}
 .agree{display:flex;gap:8px;align-items:flex-start;font-size:.9rem;color:var(--mute);margin:8px 0}
 .big{width:100%;padding:12px;margin-top:8px}
-.msg{min-height:1.2em;color:var(--warn);font-size:.9rem;margin:10px 0 0}
+.msg{min-height:1.2em;color:var(--warn);font-size:.9rem;margin:8px 0 0}
 .swap{font-size:.9rem;color:var(--mute);text-align:center;margin-bottom:0}
 </style>
 </head>
 <body>
 <header>
-  <a class="logo" href="#">Stable <span class="blk">Studio</span></a>
+  <a class="logo" href="#">Stable <span class="blk">Hub</span></a>
   <nav>
-    <a href="https://discord.gg/YOUR_INVITE">Discord</a>
-    <a href="https://youtube.com/@YOUR_CHANNEL">YouTube</a>
+    <a href="#" data-s="hub">Hub</a>
+    <a href="#tutorials" data-s="tutorials">Tutorials</a>
+    <a href="#sneak" data-s="sneak">Sneak Peek</a>
+    <a href="#forum" data-s="forum">Forum</a>
     <button class="btn" id="authBtn">Log in</button>
   </nav>
 </header>
 
-<main id="app"><p class="empty">Loading tutorials…</p></main>
+<main id="app"><p class="empty">Loading…</p></main>
 
 <footer>Made by Stable_Light6 · <a href="terms.html">Terms &amp; Privacy</a> · <a href="https://discord.gg/YOUR_INVITE">Discord</a> · <a href="https://youtube.com/@YOUR_CHANNEL">YouTube</a><br><small>Not affiliated with Roblox Corporation.</small></footer>
+
+<div id="gate" class="modal">
+  <div class="box" role="dialog" aria-modal="true" aria-labelledby="gtitle">
+    <h2 id="gtitle">Welcome to Stable <span class="blk">Hub</span></h2>
+    <p>Before you continue, please read and accept our <a href="terms.html" target="_blank" rel="noopener">Terms and Privacy Policy</a>.</p>
+    <label class="agree"><input type="checkbox" id="gateChk"><span>I am 13 or older and I agree to the Terms and Privacy Policy.</span></label>
+    <button class="btn big" id="gateBtn" disabled>Accept and enter</button>
+    <button class="ghost" id="gateNo">I do not accept</button>
+    <p class="msg" id="gateMsg" role="status"></p>
+  </div>
+</div>
 
 <div id="modal" class="modal" hidden>
   <div class="box" role="dialog" aria-modal="true" aria-labelledby="mtitle">
     <button class="x" id="mclose" aria-label="Close">×</button>
     <h2 id="mtitle">Log in</h2>
+    <input type="text" id="userEl" placeholder="Username (3-20 letters or numbers)" maxlength="20" autocomplete="username" hidden>
     <input type="email" id="emailEl" placeholder="Email" autocomplete="email">
     <input type="password" id="passEl" placeholder="Password (8+ characters)" autocomplete="current-password">
     <label class="agree" id="agreeRow" hidden><input type="checkbox" id="agreeEl"><span>I am 13 or older and agree to the <a href="terms.html" target="_blank" rel="noopener">Terms and Privacy Policy</a>.</span></label>
@@ -95,10 +129,26 @@ const SUPABASE_URL="PASTE_PROJECT_URL";
 const SUPABASE_KEY="PASTE_ANON_PUBLIC_KEY";
 // ========================================================================
 
-let DATA=[],activeTag="All",query="";
+let DATA=[],SNEAK=[],activeTag="All",query="",tutErr=false;
 const app=document.getElementById("app");
-const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const fmt=d=>{const x=new Date(d);return isNaN(x)?"":x.toLocaleDateString()};
+
+/* ---------- Terms gate ---------- */
+const TERMS_VERSION="v1";
+(function(){
+  let ok=false;
+  try{ok=localStorage.getItem("ss_terms")===TERMS_VERSION}catch(e){}
+  if(ok){$("gate").hidden=true;return}
+  document.body.style.overflow="hidden";
+  $("gateChk").onchange=()=>{$("gateBtn").disabled=!$("gateChk").checked};
+  $("gateBtn").onclick=()=>{
+    try{localStorage.setItem("ss_terms",TERMS_VERSION)}catch(e){}
+    $("gate").hidden=true;document.body.style.overflow="";
+  };
+  $("gateNo").onclick=()=>{$("gateMsg").textContent="You need to accept the Terms to use this site. You can close this tab."};
+})();
 
 /* ---------- Auth ---------- */
 let sb=null,user=null,mode="login";
@@ -106,22 +156,15 @@ if(!SUPABASE_URL.startsWith("PASTE")&&window.supabase){
   sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
   sb.auth.getSession().then(({data})=>{user=data.session?data.session.user:null;updateAuth()});
   sb.auth.onAuthStateChange((ev,session)=>{
-    user=session?session.user:null;
-    updateAuth();
+    user=session?session.user:null;updateAuth();
     if(ev==="PASSWORD_RECOVERY")openModal("reset");
   });
 }
-
-function updateAuth(){
-  $("authBtn").textContent=user?"Log out":"Log in";
-  if(DATA.length)route();
-}
-
+function updateAuth(){$("authBtn").textContent=user?"Log out":"Log in";route()}
 function setMsg(t){$("msg").textContent=t}
-
 function openModal(m){
-  mode=m;setMsg("");
-  $("passEl").value="";
+  mode=m;setMsg("");$("passEl").value="";
+  $("userEl").hidden=(m!=="signup");
   $("emailEl").hidden=(m==="reset");
   $("agreeRow").hidden=(m!=="signup");
   $("forgotWrap").hidden=(m!=="login");
@@ -131,13 +174,10 @@ function openModal(m){
   $("swap").textContent=m==="login"?"Need an account? Sign up":"Have an account? Log in";
   $("passEl").autocomplete=m==="login"?"current-password":"new-password";
   $("modal").hidden=false;
-  (m==="reset"?$("passEl"):$("emailEl")).focus();
+  (m==="reset"?$("passEl"):m==="signup"?$("userEl"):$("emailEl")).focus();
 }
 function closeModal(){$("modal").hidden=true}
-
-$("authBtn").onclick=async()=>{
-  if(user&&sb){await sb.auth.signOut()}else{openModal("login")}
-};
+$("authBtn").onclick=async()=>{if(user&&sb){await sb.auth.signOut()}else{openModal("login")}};
 $("mclose").onclick=closeModal;
 $("modal").addEventListener("click",e=>{if(e.target===$("modal"))closeModal()});
 addEventListener("keydown",e=>{if(e.key==="Escape")closeModal()});
@@ -150,19 +190,21 @@ $("forgot").onclick=async e=>{
   const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:location.origin});
   setMsg(error?error.message:"Check your email for a reset link.");
 };
-
 $("submitBtn").onclick=async()=>{
   setMsg("");
   if(!sb)return setMsg("Login is not set up yet.");
-  const email=$("emailEl").value.trim(),pass=$("passEl").value;
+  const email=$("emailEl").value.trim(),pass=$("passEl").value,name=$("userEl").value.trim();
   if(mode!=="reset"&&!email)return setMsg("Enter your email.");
   if(pass.length<8)return setMsg("Password must be at least 8 characters.");
-  if(mode==="signup"&&!$("agreeEl").checked)return setMsg("Please agree to the Terms first.");
+  if(mode==="signup"){
+    if(!/^[A-Za-z0-9_]{3,20}$/.test(name))return setMsg("Username: 3-20 letters, numbers or underscores.");
+    if(!$("agreeEl").checked)return setMsg("Please agree to the Terms first.");
+  }
   $("submitBtn").disabled=true;
   let res;
   try{
     if(mode==="login")res=await sb.auth.signInWithPassword({email,password:pass});
-    else if(mode==="signup")res=await sb.auth.signUp({email,password:pass,options:{emailRedirectTo:location.origin}});
+    else if(mode==="signup")res=await sb.auth.signUp({email,password:pass,options:{emailRedirectTo:location.origin,data:{username:name}}});
     else res=await sb.auth.updateUser({password:pass});
   }catch(err){res={error:{message:"Something went wrong. Try again."}}}
   $("submitBtn").disabled=false;
@@ -171,7 +213,7 @@ $("submitBtn").onclick=async()=>{
   closeModal();
 };
 
-/* ---------- Site ---------- */
+/* ---------- Helpers ---------- */
 function highlight(code){
   let h=esc(code);
   h=h.replace(/(--[^\n]*)/g,'<span class="cm">$1</span>');
@@ -180,21 +222,38 @@ function highlight(code){
   h=h.replace(/\b(\d+\.?\d*)\b/g,'<span class="num">$1</span>');
   return h;
 }
+function head(title,sub){return `<a class="back" href="#">← Stable Hub</a><h1 class="ph">${title}</h1><p class="mute">${sub}</p>`}
+function tutCard(t){return `<a class="card" href="#tutorial/${esc(t.id)}"><span class="badge ${esc(t.difficulty)}">${esc(t.difficulty)}</span> ${t.members?'<span class="badge">🔒 Members</span>':''}<h3>${esc(t.title)}</h3><p>${esc(t.description)}</p></a>`}
 
-function home(){
-  const tags=["All",...new Set(DATA.flatMap(t=>t.tags||[]))];
-  const list=DATA.filter(t=>(activeTag==="All"||(t.tags||[]).includes(activeTag))&&(t.title+t.description).toLowerCase().includes(query));
-  app.innerHTML=`<section class="hero"><h1>Roblox Studio tutorials you can copy and paste</h1><p>Scripts, model IDs and step-by-step instructions for every build.</p></section>
-  <input type="search" id="q" placeholder="Search tutorials" value="${esc(query)}" aria-label="Search tutorials">
-  <div class="tags">${tags.map(t=>`<button class="${t===activeTag?"on":""}" data-tag="${esc(t)}">${esc(t)}</button>`).join("")}</div>
-  <div class="grid">${list.map(t=>`<a class="card" href="#${esc(t.id)}"><span class="badge ${esc(t.difficulty)}">${esc(t.difficulty)}</span> ${t.members?'<span class="badge">🔒 Members</span>':''}<h3>${esc(t.title)}</h3><p>${esc(t.description)}</p></a>`).join("")||'<p class="empty">No tutorials match. Try another search or tag.</p>'}</div>`;
-  const q=$("q");
-  q.addEventListener("input",e=>{query=e.target.value.toLowerCase();const pos=e.target.selectionStart;home();const n=$("q");n.focus();n.setSelectionRange(pos,pos)});
-  app.querySelectorAll("[data-tag]").forEach(b=>b.onclick=()=>{activeTag=b.dataset.tag;home()});
+/* ---------- Hub ---------- */
+function hubPage(){
+  document.title="Stable Hub";
+  const newest=DATA.slice(-3).reverse();
+  app.innerHTML=`<section class="hero"><h1>Welcome to Stable Hub</h1><p>Free Roblox Studio tutorials, sneak peeks of what we're building, and a community forum.</p></section>
+  <div class="hubgrid">
+    <a class="hcard" href="#tutorials"><div class="ic">📘</div><h3>Tutorials</h3><p>Scripts, model IDs and step-by-step guides.</p></a>
+    <a class="hcard" href="#sneak"><div class="ic">👀</div><h3>Sneak Peek</h3><p>See what's coming next before it drops.</p></a>
+    <a class="hcard" href="#forum"><div class="ic">💬</div><h3>Forum</h3><p>Ask questions and share your builds.</p></a>
+  </div>
+  <div class="links"><a href="https://discord.gg/YOUR_INVITE">Join our Discord</a><a href="https://youtube.com/@YOUR_CHANNEL">Watch on YouTube</a></div>
+  ${newest.length?`<h2>Newest tutorials</h2><div class="grid">${newest.map(tutCard).join("")}</div>`:""}`;
 }
 
-function page(t){
-  document.title=t.title+" – Stable Studio";
+/* ---------- Tutorials ---------- */
+function tutorialsList(){
+  document.title="Tutorials – Stable Hub";
+  if(tutErr){app.innerHTML=head("Tutorials","")+'<p class="empty">Could not load tutorials.json. Check the file name and commas.</p>';return}
+  const tags=["All",...new Set(DATA.flatMap(t=>t.tags||[]))];
+  const list=DATA.filter(t=>(activeTag==="All"||(t.tags||[]).includes(activeTag))&&(t.title+t.description).toLowerCase().includes(query));
+  app.innerHTML=head("Tutorials","Copy-and-paste scripts and models for Roblox Studio.")+`
+  <input type="search" id="q" placeholder="Search tutorials" value="${esc(query)}" aria-label="Search tutorials">
+  <div class="tags">${tags.map(t=>`<button class="${t===activeTag?"on":""}" data-tag="${esc(t)}">${esc(t)}</button>`).join("")}</div>
+  <div class="grid">${list.map(tutCard).join("")||'<p class="empty">No tutorials match.</p>'}</div>`;
+  $("q").addEventListener("input",e=>{query=e.target.value.toLowerCase();const pos=e.target.selectionStart;tutorialsList();const n=$("q");n.focus();n.setSelectionRange(pos,pos)});
+  app.querySelectorAll("[data-tag]").forEach(b=>b.onclick=()=>{activeTag=b.dataset.tag;tutorialsList()});
+}
+function tutorialPage(t){
+  document.title=t.title+" – Stable Hub";
   const locked=t.members&&!user;
   const steps=(t.steps||[]).map(s=>{const o=typeof s==="string"?{text:s}:s;return `<li>${esc(o.text)}${o.image?`<img src="${esc(o.image)}" alt="">`:""}</li>`}).join("");
   const scripts=locked?"":(t.scripts||[]).map((s,i)=>`<div class="code"><div class="bar"><span><b>${esc(s.name)}</b> · ${esc(s.location||"")}</span><button class="copy" data-i="${i}">Copy script</button></div><pre><code>${highlight(s.code)}</code></pre></div>`).join("");
@@ -202,12 +261,9 @@ function page(t){
   const gate=locked?`<h2>Scripts and Models</h2><div class="lock">🔒 Members only. <button class="btn" id="lockLogin">Log in or sign up</button> to see the scripts and models.</div>`:"";
   const notes=(t.notes||[]).map(n=>`<div class="note">${esc(n)}</div>`).join("");
   const vid=t.youtube?`<div class="video"><iframe src="https://www.youtube.com/embed/${esc(t.youtube)}" allowfullscreen title="Tutorial video"></iframe></div>`:"";
-  app.innerHTML=`<article class="t"><a class="back" href="#">Back to all tutorials</a><span class="badge ${esc(t.difficulty)}">${esc(t.difficulty)}</span><h1>${esc(t.title)}</h1><p>${esc(t.description)}</p>${vid}
-  ${steps?`<h2>Instructions</h2><ol class="steps">${steps}</ol>`:""}
-  ${gate}
-  ${scripts?`<h2>Scripts</h2>${scripts}`:""}
-  ${models?`<h2>Models</h2>${models}`:""}
-  ${notes?`<h2>Notes</h2>${notes}`:""}</article>`;
+  app.innerHTML=`<article class="t"><a class="back" href="#tutorials">← All tutorials</a><br><span class="badge ${esc(t.difficulty)}">${esc(t.difficulty)}</span><h1>${esc(t.title)}</h1><p>${esc(t.description)}</p>${vid}
+  ${steps?`<h2>Instructions</h2><ol class="steps">${steps}</ol>`:""}${gate}
+  ${scripts?`<h2>Scripts</h2>${scripts}`:""}${models?`<h2>Models</h2>${models}`:""}${notes?`<h2>Notes</h2>${notes}`:""}</article>`;
   app.querySelectorAll(".copy").forEach(b=>b.onclick=()=>{
     const text=b.dataset.id||t.scripts[b.dataset.i].code,label=b.textContent;
     navigator.clipboard.writeText(text).then(()=>{b.textContent="Copied";setTimeout(()=>b.textContent=label,1500)});
@@ -216,12 +272,95 @@ function page(t){
   window.scrollTo(0,0);
 }
 
-function route(){
-  const id=location.hash.slice(1),t=DATA.find(x=>x.id===id);
-  if(t)page(t);else{document.title="Stable Studio – Roblox Studio Tutorials";home()}
+/* ---------- Sneak Peek ---------- */
+function sneakPage(){
+  document.title="Sneak Peek – Stable Hub";
+  app.innerHTML=head("Sneak Peek","A look at what we're building next.")+`<div class="grid" style="margin-top:20px">${
+    SNEAK.map(s=>`<div class="card">${s.image?`<img src="${esc(s.image)}" alt="">`:""}<span class="badge">${esc(s.status||"Coming soon")}</span> <span class="mute">${fmt(s.date)}</span><h3>${esc(s.title)}</h3><p>${esc(s.description)}</p></div>`).join("")
+    ||'<p class="empty">Nothing here yet. Check back soon!</p>'}</div>`;
 }
-fetch("tutorials.json").then(r=>r.json()).then(d=>{DATA=d;route();addEventListener("hashchange",route)})
-.catch(()=>{app.innerHTML='<p class="empty">Could not load tutorials.json. Check the file name and commas.</p>'});
+
+/* ---------- Forum ---------- */
+async function forumPage(){
+  document.title="Forum – Stable Hub";
+  app.innerHTML=head("Forum","Ask questions, share builds and help other creators.")+'<div id="fbox"><p class="empty">Loading…</p></div>';
+  if(!sb)return $("fbox").innerHTML='<p class="empty">The forum is not set up yet.</p>';
+  const {data,error}=await sb.from("posts").select("id,title,author,created_at").order("created_at",{ascending:false}).limit(50);
+  const box=$("fbox");if(!box)return;
+  if(error)return box.innerHTML='<p class="empty">Could not load the forum. Did you run the SQL in Supabase?</p>';
+  box.innerHTML=`<button class="btn" id="newPost">+ New post</button>
+  <div id="pform" class="form" hidden>
+    <input type="text" id="pt" maxlength="120" placeholder="Title">
+    <textarea id="pb" maxlength="2000" rows="5" placeholder="What do you want to ask or share?"></textarea>
+    <div><button class="btn" id="pgo">Post</button> <span class="msg" id="pmsg"></span></div>
+  </div>
+  <div>${(data||[]).map(p=>`<a class="row" href="#forum/${p.id}"><b>${esc(p.title)}</b><span>${esc(p.author)} · ${fmt(p.created_at)}</span></a>`).join("")||'<p class="empty">No posts yet. Be the first!</p>'}</div>`;
+  $("newPost").onclick=()=>{
+    if(!user){openModal("login");setMsg("Log in to post.");return}
+    $("pform").hidden=!$("pform").hidden;
+  };
+  $("pgo").onclick=async()=>{
+    const title=$("pt").value.trim(),body=$("pb").value.trim();
+    if(title.length<3||!body)return $("pmsg").textContent="Add a title and some text.";
+    $("pgo").disabled=true;
+    const {error}=await sb.from("posts").insert({title,body});
+    $("pgo").disabled=false;
+    if(error)return $("pmsg").textContent=error.message;
+    forumPage();
+  };
+}
+async function threadPage(arg){
+  const pid=Number(arg);
+  app.innerHTML='<a class="back" href="#forum">← Forum</a><div id="tbox"><p class="empty">Loading…</p></div>';
+  if(!sb||!Number.isInteger(pid))return $("tbox").innerHTML='<p class="empty">Post not found.</p>';
+  const [p,r]=await Promise.all([
+    sb.from("posts").select("*").eq("id",pid).maybeSingle(),
+    sb.from("replies").select("*").eq("post_id",pid).order("created_at")
+  ]);
+  const box=$("tbox");if(!box)return;
+  if(!p.data)return box.innerHTML='<p class="empty">Post not found.</p>';
+  const post=p.data,replies=r.data||[];
+  const del=(id,table,uid)=>user&&user.id===uid?`<button class="del" data-t="${table}" data-id="${id}">Delete</button>`:"";
+  document.title=post.title+" – Stable Hub";
+  box.innerHTML=`<h1 class="ph">${esc(post.title)}</h1>
+  <div class="post"><small>${esc(post.author)} · ${fmt(post.created_at)} ${del(post.id,"posts",post.user_id)}</small>${esc(post.body)}</div>
+  <h2>${replies.length} ${replies.length===1?"reply":"replies"}</h2>
+  ${replies.map(x=>`<div class="post"><small>${esc(x.author)} · ${fmt(x.created_at)} ${del(x.id,"replies",x.user_id)}</small>${esc(x.body)}</div>`).join("")}
+  <div class="form"><textarea id="rb" maxlength="1000" rows="3" placeholder="Write a reply"></textarea>
+  <div><button class="btn" id="rgo">Reply</button> <span class="msg" id="rmsg"></span></div></div>`;
+  $("rgo").onclick=async()=>{
+    if(!user){openModal("login");setMsg("Log in to reply.");return}
+    const body=$("rb").value.trim();
+    if(!body)return $("rmsg").textContent="Write something first.";
+    $("rgo").disabled=true;
+    const {error}=await sb.from("replies").insert({post_id:pid,body});
+    $("rgo").disabled=false;
+    if(error)return $("rmsg").textContent=error.message;
+    threadPage(arg);
+  };
+  box.querySelectorAll(".del").forEach(b=>b.onclick=async()=>{
+    if(!confirm("Delete this?"))return;
+    const {error}=await sb.from(b.dataset.t).delete().eq("id",b.dataset.id);
+    if(error)return alert(error.message);
+    if(b.dataset.t==="posts")location.hash="#forum";else threadPage(arg);
+  });
+  window.scrollTo(0,0);
+}
+
+/* ---------- Router ---------- */
+function route(){
+  const [sec,arg]=location.hash.replace(/^#\/?/,"").split("/");
+  document.querySelectorAll("nav a").forEach(a=>a.classList.toggle("on",a.dataset.s===(sec==="tutorial"?"tutorials":(sec||"hub"))));
+  if(sec==="tutorials")tutorialsList();
+  else if(sec==="tutorial"){const t=DATA.find(x=>x.id===arg);t?tutorialPage(t):tutorialsList()}
+  else if(sec==="sneak")sneakPage();
+  else if(sec==="forum"){arg?threadPage(arg):forumPage()}
+  else hubPage();
+}
+addEventListener("hashchange",()=>{route();window.scrollTo(0,0)});
+route();
+fetch("tutorials.json").then(r=>r.json()).then(d=>{DATA=d;route()}).catch(()=>{tutErr=true;route()});
+fetch("sneakpeeks.json").then(r=>r.json()).then(d=>{SNEAK=d;route()}).catch(()=>{});
 </script>
 </body>
-  </html>
+</html>
